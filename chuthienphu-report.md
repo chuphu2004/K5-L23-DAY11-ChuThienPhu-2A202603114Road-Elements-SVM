@@ -78,8 +78,8 @@ Cảnh báo lint còn lại đã được kiểm lại trên ảnh và giữ ngu
 4. Một đoạn XML có <polyline label="lane">.
 
 ## 7. Tự đánh giá
-Lỗi bạn mắc nhiều nhất hôm nay (theo mã QC1-xx), và cách tránh ở Ngày 20:  
-Nhãn của bạn đi vào model ở đâu? Chọn một lỗi đã sửa và nói nó làm model học sai thế nào:  
+Lỗi bạn mắc nhiều nhất hôm nay (theo mã QC1-xx), và cách tránh ở Ngày 20: QC1-08 và QC1-09 (25/50 lỗi trong phiếu tự QC), gần như tất cả ở A08: đèn xe đang sáng xanh quay về xe gán `unknown` và `type = pedestrian`, đèn nhìn nghiêng gán màu vỏ (`yellow`), một cụm đèn có nhiều box chồng nhau. Lỗi nặng nhiều nhất là QC1-03 (7 lỗi), chủ yếu ở B03: ở camera `fisheye_rear` tôi để `position = other` như camera hai bên. Cách tránh ở Ngày 20: (1) phóng to tối thiểu 400 % với đèn nhỏ, mỗi cụm đèn đúng một box sát vỏ, `color` là ngăn đang sáng chứ không phải màu vỏ; (2) đọc `type` theo hình ngăn đèn (đèn tròn 3 ngăn là `vehicle`); (3) nhớ `position = other` chỉ dành cho `fisheye_left`/`fisheye_right`, còn `fisheye_front`/`fisheye_rear` vẫn dùng L1/R1/L2/R2; (4) trước khi Finish, chạy `road_check lint` và tự xem lại ảnh có vẽ đè nhãn cho các ảnh nhiều đèn.
+Nhãn của bạn đi vào model ở đâu? Chọn một lỗi đã sửa và nói nó làm model học sai thế nào: polyline `lane` được nội suy thành đích row-anchor (x của vạch tại từng hàng neo) cho model phát hiện làn dùng trong LDW/LKA; `drivable` thành mặt nạ phân đoạn vùng lái; box đèn và biển cùng thuộc tính đi vào detector và bộ phân loại trạng thái đèn; tag dùng để chia dữ liệu theo ODD (camera, giờ, thời tiết). Lỗi đã sửa: ở A11 vạch vàng đôi sát bên trái làn mình đi lúc đầu gán `position = L2` và ảnh không có L1. Nếu không sửa, model học rằng ở cảnh này làn của xe không có biên trái (đích L1 trống ở mọi hàng neo) và vạch vàng là vạch của làn bên cạnh. Khi chạy thật, LKA sẽ không nhận ra mép trái làn hoặc cho rằng làn rộng sang tới vạch kế tiếp, nên có thể cho xe dạt về phía vạch vàng đôi, tức lấn sang chiều ngược lại.
 
 ## 8. (Tùy chọn, buffer) Từ polyline đến đích row-anchor
 | y | 720 | 680 | 640 | 600 | 560 |
